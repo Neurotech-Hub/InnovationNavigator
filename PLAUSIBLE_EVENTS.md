@@ -18,10 +18,13 @@ For each row: **Add goal → Custom event → paste Event name**.
 | ☐ | `Navigator reset` | User hits Reset / returns home | — |
 | ☐ | `Full journey toggled` | User toggles full roadmap vs focused path | `on` — `true` / `false` |
 | ☐ | `Outbound click` | User clicks **Official page** on a program | `resource`, `url` |
+| ☐ | `Feedback prompted` | Soft feedback card is shown | — |
+| ☐ | `Feedback email clicked` | User clicks **Email me** on the feedback card | — |
+| ☐ | `Feedback dismissed` | User dismisses the feedback card | — |
 
 ## Suggested order
 
-1. Add all eight goals above (even before much traffic).
+1. Add all custom-event goals above (even before much traffic).
 2. Click through the live site once: pick a goal → open a program → Official page → Guide me → complete → All resources → Reset.
 3. Confirm each goal increments in Plausible (may take a minute).
 4. If props appear on your plan, filter by `goal` / `resource` for which paths and programs get traction.
@@ -45,3 +48,4 @@ For each row: **Add goal → Custom event → paste Event name**.
 | Navigator reset | `NavigatorContext` (`reset`) |
 | Full journey toggled | `NavigatorContext` (`setShowFullJourney`) |
 | Outbound click | `ResourceCard` (Official page link) |
+| Feedback prompted / email / dismissed | `FeedbackPrompt` |

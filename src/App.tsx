@@ -2,6 +2,7 @@ import { GoalsRail } from "./components/Goals/GoalsRail";
 import { PathView } from "./components/Journey/PathView";
 import { NextMoves } from "./components/Moves/NextMoves";
 import { ResourcesCatalog } from "./components/Catalog/ResourcesCatalog";
+import { FeedbackPrompt } from "./components/UI/FeedbackPrompt";
 import { Header } from "./components/UI/Header";
 import { NavigatorProvider, useNavigator } from "./state/NavigatorContext";
 
@@ -23,6 +24,7 @@ function Shell() {
           <NextMoves />
         </div>
       )}
+      <FeedbackPrompt />
     </div>
   );
 }

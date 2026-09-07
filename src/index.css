@@ -270,6 +270,54 @@ body {
   }
 }
 
+/* Centered feedback modal with blurred scrim. */
+.feedback-prompt {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+
+.feedback-prompt__scrim {
+  animation: feedback-scrim-in 280ms var(--ease-out-soft) both;
+}
+
+.feedback-prompt__panel {
+  animation: feedback-panel-in 380ms var(--ease-out-soft) both;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-washu) 40%, transparent),
+    0 0 28px color-mix(in srgb, var(--color-washu) 28%, transparent),
+    0 0 64px color-mix(in srgb, var(--color-washu) 18%, transparent),
+    0 24px 64px -28px rgba(0, 0, 0, 0.85);
+}
+
+@keyframes feedback-scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes feedback-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback-prompt__scrim,
+  .feedback-prompt__panel {
+    animation: none;
+  }
+}
+
 /* Hide the Botpress host until the compact FAB skin is in the shadow root. */
 .bpChatContainer:not(.nm-webchat-ready) {
   visibility: hidden !important;

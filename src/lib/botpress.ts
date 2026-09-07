@@ -6,8 +6,17 @@ const CONFIG_SRC =
 
 const READY_CLASS = "nm-webchat-ready";
 
+type BotpressEvent =
+  | "webchat:initialized"
+  | "webchat:opened"
+  | "webchat:closed"
+  | string;
+
 type BotpressWebchat = {
   init: (config: unknown) => void;
+  open?: () => void;
+  close?: () => void;
+  on?: (event: BotpressEvent, handler: () => void) => (() => void) | void;
 };
 
 declare global {
@@ -16,7 +25,22 @@ declare global {
   }
 }
 
+type Listener = () => void;
+
 let loadPromise: Promise<void> | null = null;
+let webchatOpen = false;
+let lifecycleBound = false;
+const openListeners = new Set<Listener>();
+
+function emitOpen() {
+  for (const listener of openListeners) listener();
+}
+
+function setWebchatOpen(next: boolean) {
+  if (webchatOpen === next) return;
+  webchatOpen = next;
+  emitOpen();
+}
 
 function loadScript(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -62,6 +86,12 @@ function webchatShadowRoot(): ShadowRoot | null {
   return host.firstElementChild?.shadowRoot ?? null;
 }
 
+function syncOpenFromDom() {
+  const shadow = webchatShadowRoot();
+  const chat = shadow?.querySelector(".bpWebchat");
+  setWebchatOpen(Boolean(chat?.classList.contains("bpOpen")));
+}
+
 function revealWebchat() {
   webchatHost()?.classList.add(READY_CLASS);
 }
@@ -76,7 +106,16 @@ function injectCompactFab(): boolean {
     shadow.appendChild(style);
   }
   revealWebchat();
+  syncOpenFromDom();
   return true;
+}
+
+function bindLifecycle() {
+  const bp = window.botpress;
+  if (!bp?.on || lifecycleBound) return;
+  lifecycleBound = true;
+  bp.on("webchat:opened", () => setWebchatOpen(true));
+  bp.on("webchat:closed", () => setWebchatOpen(false));
 }
 
 function watchForWebchat() {
@@ -92,11 +131,24 @@ function watchForWebchat() {
   }, 50);
 }
 
+export function isBotpressOpen(): boolean {
+  syncOpenFromDom();
+  return webchatOpen;
+}
+
+export function subscribeBotpressOpen(listener: Listener): () => void {
+  openListeners.add(listener);
+  return () => {
+    openListeners.delete(listener);
+  };
+}
+
 export function ensureBotpressLoaded(): Promise<void> {
   if (!loadPromise) {
     watchForWebchat();
     loadPromise = (async () => {
       await loadScript(INJECT_SRC);
+      bindLifecycle();
       await loadScript(CONFIG_SRC);
       injectCompactFab();
     })().catch((error) => {
