@@ -6,6 +6,12 @@ const VERIFIED = "2026-09-06";
 // - needs: tag only capabilities the resource directly provides; prefer 1, max 2 except unusually integrated programs.
 // - inventionTypes: use "broad" alone for technology-agnostic resources; otherwise list only supported specific types.
 // - locations: use one primary access/scope bucket so the Location view does not duplicate cards.
+//
+// URL quality:
+// - Primary `url` = dedicated program/resource page whenever one exists.
+// - Avoid generic department, ecosystem, or landing pages as `url` when a specific program page exists.
+// - Broad pages belong in `sourceUrls` (eligibility, funding, contacts, related infrastructure).
+// - If the resource name and landing-page title do not obviously correspond, flag for manual review.
 
 export const resources: Resource[] = [
   {
@@ -364,7 +370,7 @@ export const resources: Resource[] = [
     type: "resource",
     title: "Needleman Program (NPIC)",
     organization: "Needleman Program for Innovation & Commercialization, WashU",
-    url: "https://needlemanprogram.wustl.edu/services/",
+    url: "https://needlemanprogram.wustl.edu/",
     internality: "washu",
     needs: ["funding", "expertise-mentorship", "build-test"],
     inventionTypes: ["therapeutics"],
@@ -403,6 +409,7 @@ export const resources: Resource[] = [
     nextDeadline: null,
     lastVerified: VERIFIED,
     sourceUrls: [
+      "https://needlemanprogram.wustl.edu/",
       "https://needlemanprogram.wustl.edu/services/",
       "https://needlemanprogram.wustl.edu/application-resources/",
       "https://needlemanprogram.wustl.edu/contact-us/",
@@ -839,57 +846,6 @@ export const resources: Resource[] = [
     contact: "sc@wustl.edu",
   },
   {
-    id: "healthcare-innovation-lab",
-    type: "resource",
-    title: "BJC / WashU Healthcare Innovation Lab",
-    organization: "BJC HealthCare · WashU Medicine",
-    url: "https://research.washu.edu/faculty-resources/",
-    internality: "washu",
-    needs: ["build-test", "expertise-mentorship"],
-    inventionTypes: ["software-digital", "devices-diagnostics"],
-    locations: ["washu"],
-    domains: ["software", "device", "clinical-workflow", "algorithm"],
-    states: ["s1", "s2", "s3", "s4", "s6", "s7"],
-    problemsSolved: ["care-delivery-innovation", "digital-health", "clinical-workflow", "pilot", "implementation"],
-    whatYouGet:
-      "A joint BJC HealthCare / WashU Medicine health-system innovation program that identifies, develops, pilots, and evaluates applied innovations intended to improve care delivery and population health. Publicly described work includes predictive analytics, digital point-of-care tools, remote monitoring, and other operational innovations.",
-    whyYouMightCare:
-      "For inventions whose real test is whether they improve care inside a health system, a clinical operations partner can matter more than a startup accelerator. The Lab is a potential bridge from an academic or digital idea to a real-world care-delivery pilot.",
-    usefulWhen: [
-      "The innovation changes clinical workflow, care delivery, remote monitoring, or health-system operations",
-      "You need to test practical value in a BJC/WashU care environment",
-      "The primary question is implementation and clinical-system value rather than licensing alone",
-    ],
-    notFor: [
-      "Assume every faculty invention is eligible for a Lab pilot",
-      "General patent/licensing strategy or basic laboratory prototyping",
-    ],
-    eligibility:
-      "The Lab is a joint BJC/WashU health-system innovation program. Public WashU sources describe it as a faculty resource, but a standing investigator-facing intake/eligibility process is not clearly specified; contact the program before treating it as an available pilot route.",
-    requiresDisclosure: false,
-    companyRequired: false,
-    funding: null,
-    caveats: [
-      "Selection for a formal pilot is not guaranteed and public intake criteria are not clearly specified.",
-      "Best treated as a targeted collaboration resource for care-delivery innovation, not a general-purpose core.",
-    ],
-    investigatorReturns: [
-      "health-system feedback",
-      "real-world pilot and implementation evidence",
-      "clinical and operational collaborators",
-    ],
-    nextStates: ["s4", "s6", "s7"],
-    status: "evergreen_program_verify_current_call",
-    nextDeadline: null,
-    lastVerified: "2026-09-06",
-    sourceUrls: [
-      "https://research.washu.edu/faculty-resources/",
-      "https://www.bjc.org/medical-professionals/center-clinical-excellence",
-    ],
-    priority: "second",
-    purposes: ["research", "expertise"],
-  },
-  {
     id: "siteman-sip-rda",
     type: "resource",
     title: "Siteman Investment Program Research Development Awards (SIP RDA)",
@@ -1073,7 +1029,7 @@ export const resources: Resource[] = [
     type: "resource",
     title: "WashU Innovation",
     organization: "Washington University in St. Louis",
-    url: "https://innovation.wustl.edu/",
+    url: "https://innovation.washu.edu/",
     internality: "washu",
     needs: ["expertise-mentorship"],
     inventionTypes: ["broad"],
@@ -1106,9 +1062,9 @@ export const resources: Resource[] = [
     nextDeadline: null,
     lastVerified: VERIFIED,
     sourceUrls: [
-      "https://innovation.wustl.edu/",
-      "https://innovation.wustl.edu/our-process/",
-      "https://innovation.wustl.edu/our-ecosystem/",
+      "https://innovation.washu.edu/",
+      "https://innovation.washu.edu/our-process/",
+      "https://innovation.washu.edu/our-ecosystem/",
     ],
     priority: "second",
     purposes: ["research"],
@@ -1170,7 +1126,7 @@ export const resources: Resource[] = [
     states: ["s4", "s6", "s8"],
     problemsSolved: ["feedback", "networking", "venture-exploration"],
     whatYouGet:
-      "Experienced entrepreneur and industry perspectives. IdeaBounce provides pitching, feedback, and networking.",
+      "In-Residence mentoring from experienced entrepreneurs and industry advisors, plus IdeaBounce events for pitching, feedback, and networking.",
     whyYouMightCare:
       "Useful before committing to a venture. You do not need a finished company or investor deck.",
     usefulWhen: [
@@ -1191,8 +1147,11 @@ export const resources: Resource[] = [
     nextStates: ["s6", "s8"],
     status: "evergreen",
     nextDeadline: null,
-    lastVerified: VERIFIED,
-    sourceUrls: ["https://skandalaris.wustl.edu/programs/"],
+    lastVerified: "2026-09-07",
+    sourceUrls: [
+      "https://skandalaris.wustl.edu/programs/",
+      "https://skandalaris.wustl.edu/resource/in-residence-program/",
+    ],
     contact: "sc@wustl.edu",
     priority: "second",
     purposes: ["expertise", "company"],
@@ -1246,7 +1205,7 @@ export const resources: Resource[] = [
     type: "resource",
     title: "VeritaScience — WashU + Deerfield",
     organization: "Washington University in St. Louis · Deerfield Management",
-    url: "https://source.wustl.edu/2024/01/washington-university-deerfield-management-launch-veritascience-to-drive-drug-discovery/",
+    url: "https://source.washu.edu/2024/01/washington-university-deerfield-management-launch-veritascience-to-drive-drug-discovery/",
     internality: "washu",
     needs: ["funding", "expertise-mentorship"],
     inventionTypes: ["therapeutics"],
@@ -1285,7 +1244,7 @@ export const resources: Resource[] = [
     nextDeadline: null,
     lastVerified: VERIFIED,
     sourceUrls: [
-      "https://source.wustl.edu/2024/01/washington-university-deerfield-management-launch-veritascience-to-drive-drug-discovery/",
+      "https://source.washu.edu/2024/01/washington-university-deerfield-management-launch-veritascience-to-drive-drug-discovery/",
     ],
     contact: "OTM / WUSM business development; verify current contact",
     priority: "second",
@@ -1296,7 +1255,7 @@ export const resources: Resource[] = [
     type: "resource",
     title: "Bristol Myers Squibb–WashU neuroscience collaboration",
     organization: "Washington University School of Medicine · BMS",
-    url: "https://medicine.wustl.edu/news/washu-announces-new-academic-industry-collaboration-with-bristol-myers-squibb/",
+    url: "https://medicine.washu.edu/news/washu-announces-new-academic-industry-collaboration-with-bristol-myers-squibb/",
     internality: "washu",
     needs: ["funding", "industry-connections"],
     inventionTypes: ["therapeutics"],
@@ -1334,7 +1293,7 @@ export const resources: Resource[] = [
     nextDeadline: null,
     lastVerified: VERIFIED,
     sourceUrls: [
-      "https://medicine.wustl.edu/news/washu-announces-new-academic-industry-collaboration-with-bristol-myers-squibb/",
+      "https://medicine.washu.edu/news/washu-announces-new-academic-industry-collaboration-with-bristol-myers-squibb/",
     ],
     contact: "Mark Van Horn · markv@wustl.edu",
     priority: "second",
@@ -1345,7 +1304,7 @@ export const resources: Resource[] = [
     type: "resource",
     title: "NEURO360 / regional neuroscience innovation network",
     organization: "Washington University in St. Louis · regional partners",
-    url: "https://innovation.wustl.edu/our-ecosystem/",
+    url: "https://neuro360engine.org/",
     internality: "regional",
     needs: ["industry-connections"],
     inventionTypes: ["therapeutics", "devices-diagnostics", "research-tools"],
@@ -1354,7 +1313,7 @@ export const resources: Resource[] = [
     states: ["s4", "s8"],
     problemsSolved: ["network", "ecosystem"],
     whatYouGet:
-      "A WashU-led regional neuroscience innovation effort originally supported through an NSF Engines Development Award and involving regional organizations including BioSTL.",
+      "A regional neuroscience innovation coalition of academic, industry, healthcare, and civic partners working to advance neurotechnology commercialization, workforce pathways, and ecosystem connections in the St. Louis region.",
     whyYouMightCare:
       "A network layer connecting academic neuroscience to regional company-building and workforce resources — not a guaranteed individual grant.",
     usefulWhen: [
@@ -1369,14 +1328,17 @@ export const resources: Resource[] = [
     companyRequired: false,
     funding: null,
     caveats: [
-      "Program status should be periodically re-verified. Do not treat this as a walk-in funding call.",
+      "Program status should be periodically re-verified. Do not treat this as a walk-in funding call or an active NSF Engines award by itself.",
     ],
     investigatorReturns: ["regional visibility", "industry network"],
     nextStates: ["s8"],
     status: "evergreen_program_verify_current_call",
     nextDeadline: null,
-    lastVerified: VERIFIED,
-    sourceUrls: ["https://innovation.wustl.edu/our-ecosystem/"],
+    lastVerified: "2026-09-07",
+    sourceUrls: [
+      "https://neuro360engine.org/",
+      "https://innovation.washu.edu/our-ecosystem/",
+    ],
     priority: "second",
     purposes: ["expertise", "company"],
   },
@@ -1385,7 +1347,7 @@ export const resources: Resource[] = [
     type: "resource",
     title: "BioGenerator Startup Connect",
     organization: "BioGenerator Ventures",
-    url: "https://www.biostl.org/what-we-do/biogenerator",
+    url: "https://www.biostl.org/events/startup-connect/",
     internality: "regional",
     needs: ["industry-connections"],
     inventionTypes: ["therapeutics", "devices-diagnostics", "research-tools"],
@@ -1405,13 +1367,18 @@ export const resources: Resource[] = [
     requiresDisclosure: false,
     companyRequired: true,
     funding: null,
-    caveats: ["Current noted event: September 9–10, 2026. Confirm before planning around it."],
+    caveats: [
+      "Next noted event: September 9–10, 2026 (Startup Connect 2027 is listed for September 8–9). Confirm before planning around it.",
+    ],
     investigatorReturns: ["investor meetings", "ecosystem visibility"],
     nextStates: ["s9"],
     status: "evergreen_program_verify_current_call",
     nextDeadline: "2026-09-09 (Startup Connect; verify)",
-    lastVerified: VERIFIED,
-    sourceUrls: ["https://www.biostl.org/what-we-do/biogenerator"],
+    lastVerified: "2026-09-07",
+    sourceUrls: [
+      "https://www.biostl.org/events/startup-connect/",
+      "https://www.biostl.org/what-we-do/biogenerator",
+    ],
     contact: "aj@biogeneratorventures.com",
     priority: "second",
     purposes: ["company"],

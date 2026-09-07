@@ -325,7 +325,6 @@ const NEW_SUPPORT_IDS = [
   "trial-care",
   "mhealth-research-core",
   "jroc",
-  "healthcare-innovation-lab",
   "siteman-sip-rda",
   "ecrc",
 ] as const;
@@ -333,7 +332,6 @@ const NEW_SUPPORT_IDS = [
 const GATED_SPECIALISTS = [
   "trial-care",
   "mhealth-research-core",
-  "healthcare-innovation-lab",
   "jroc",
   "siteman-sip-rda",
   "ecrc",

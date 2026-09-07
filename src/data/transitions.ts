@@ -38,7 +38,7 @@ export const transitions: Transition[] = [
     to: "s4",
     question: "Who outside your lab cares, and what do they actually need?",
     evidence: "External user, clinical, or industry feedback in their words.",
-    resourceIds: ["dep", "xir", "skandalaris-vd", "icts", "jroc", "healthcare-innovation-lab"],
+    resourceIds: ["dep", "xir", "skandalaris-vd", "icts", "jroc"],
   },
   {
     id: "t-s3-s5",
@@ -132,7 +132,6 @@ export const transitions: Transition[] = [
       "mhealth-research-core",
       "center-clinical-studies",
       "icts-regulatory-support",
-      "healthcare-innovation-lab",
     ],
     modalities: ["software"],
   },

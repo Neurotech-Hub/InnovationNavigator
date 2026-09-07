@@ -102,7 +102,6 @@ export const nodes: MapNode[] = [
       "dep",
       "center-drug-discovery",
       "mhealth-research-core",
-      "healthcare-innovation-lab",
     ],
     details: {
       whyItMatters:
@@ -134,7 +133,6 @@ export const nodes: MapNode[] = [
       "skandalaris-vd",
       "icts",
       "jroc",
-      "healthcare-innovation-lab",
     ],
     details: {
       whyItMatters:
@@ -194,7 +192,6 @@ export const nodes: MapNode[] = [
       "center-clinical-studies",
       "icts-regulatory-support",
       "mhealth-research-core",
-      "healthcare-innovation-lab",
       "jroc",
       "trial-care",
       "siteman-sip-rda",
@@ -236,7 +233,6 @@ export const nodes: MapNode[] = [
       "jroc",
       "trial-care",
       "ecrc",
-      "healthcare-innovation-lab",
     ],
     details: {
       whyItMatters:

@@ -16,7 +16,6 @@ export const CONTEXT_GATED: Record<string, string[]> = {
   "siteman-sip-rda": ["cancer"],
   "trial-care": ["multicenter-trial"],
   "mhealth-research-core": ["digital-health", "mhealth"],
-  "healthcare-innovation-lab": ["clinical-workflow", "digital-health"],
   jroc: ["industry-collaboration", "industry-sponsored-research"],
 };
 
