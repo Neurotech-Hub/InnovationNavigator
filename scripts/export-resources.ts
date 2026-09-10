@@ -4,11 +4,15 @@ import { fileURLToPath } from "node:url";
 import {
   RESOURCE_CATALOG_PATH,
   RESOURCE_CSV_PATH,
+  RESOURCE_GEM_MD_PATH,
+  RESOURCE_GEM_PDF_PATH,
   RESOURCE_KB_DIR,
   buildResourceCatalog,
   catalogToCsv,
+  catalogToGemMarkdown,
   resourceToMarkdown,
 } from "../src/logic/exportResources";
+import { writeGemPdfFromMarkdown } from "./write-gem-pdf";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -22,12 +26,15 @@ function catalogVersion(): string {
 export function writeResourceCatalog(rootDir = root): {
   json: string;
   csv: string;
+  gemMd: string;
+  gemPdf: string;
   kbDir: string;
   count: number;
 } {
   const publicDir = join(rootDir, "public");
   const kbDir = join(publicDir, RESOURCE_KB_DIR);
   const catalog = buildResourceCatalog(catalogVersion());
+  const gemMarkdown = catalogToGemMarkdown(catalog);
 
   mkdirSync(publicDir, { recursive: true });
   rmSync(kbDir, { recursive: true, force: true });
@@ -35,8 +42,12 @@ export function writeResourceCatalog(rootDir = root): {
 
   const jsonPath = join(publicDir, RESOURCE_CATALOG_PATH);
   const csvPath = join(publicDir, RESOURCE_CSV_PATH);
+  const gemMdPath = join(publicDir, RESOURCE_GEM_MD_PATH);
+  const gemPdfPath = join(publicDir, RESOURCE_GEM_PDF_PATH);
+
   writeFileSync(jsonPath, `${JSON.stringify(catalog, null, 2)}\n`);
   writeFileSync(csvPath, catalogToCsv(catalog));
+  writeFileSync(gemMdPath, `${gemMarkdown}\n`);
 
   for (const resource of catalog.resources) {
     writeFileSync(
@@ -48,16 +59,32 @@ export function writeResourceCatalog(rootDir = root): {
   return {
     json: jsonPath,
     csv: csvPath,
+    gemMd: gemMdPath,
+    gemPdf: gemPdfPath,
     kbDir,
     count: catalog.resourceCount,
   };
 }
 
+export async function writeResourceCatalogAsync(rootDir = root): Promise<{
+  json: string;
+  csv: string;
+  gemMd: string;
+  gemPdf: string;
+  kbDir: string;
+  count: number;
+}> {
+  const written = writeResourceCatalog(rootDir);
+  const gemMarkdown = readFileSync(written.gemMd, "utf8");
+  await writeGemPdfFromMarkdown(gemMarkdown, written.gemPdf);
+  return written;
+}
+
 const invokedDirectly = /export-resources/.test(process.argv[1] ?? "");
 
 if (invokedDirectly) {
-  const written = writeResourceCatalog();
+  const written = await writeResourceCatalogAsync();
   console.log(
-    `Exported ${written.count} resources → ${written.json}, ${written.csv}, ${written.kbDir}/`,
+    `Exported ${written.count} resources → ${written.json}, ${written.csv}, ${written.gemMd}, ${written.gemPdf}, ${written.kbDir}/`,
   );
 }

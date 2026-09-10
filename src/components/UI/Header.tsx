@@ -279,30 +279,14 @@ export function Header() {
             className="group relative z-10 flex max-w-full items-center gap-2 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-washu"
             aria-label="NextMove at WashU home"
           >
-            <svg
-              viewBox="0 0 32 32"
-              fill="none"
+            <img
+              src={`${import.meta.env.BASE_URL}nextmove-logo-nobkg.png`}
+              alt=""
+              width={36}
+              height={36}
               aria-hidden
-              className="size-7 shrink-0 transition duration-200 group-hover:drop-shadow-[0_0_8px_rgba(225,75,82,0.5)] sm:size-8 md:size-9"
-            >
-              <circle
-                cx="10"
-                cy="16"
-                r="5.5"
-                fill="var(--color-washu)"
-                opacity="0.18"
-              />
-              <circle cx="10" cy="16" r="3" fill="var(--color-washu)" />
-              <circle cx="22" cy="10" r="2.5" fill="var(--color-gold)" />
-              <circle cx="22" cy="22" r="2.5" fill="var(--color-sage)" />
-              <path
-                d="M13 16h6.5M19 12.5L22 10M19 19.5L22 22"
-                stroke="var(--color-ink)"
-                strokeOpacity="0.55"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              />
-            </svg>
+              className="size-7 shrink-0 object-contain transition duration-200 group-hover:drop-shadow-[0_0_8px_rgba(225,75,82,0.45)] sm:size-8 md:size-9"
+            />
             <span className="flex min-w-0 items-center gap-1.5 md:gap-2">
               <span className="font-logo truncate text-[13px] font-medium uppercase leading-none tracking-[0.06em] text-ink sm:text-[14px] md:text-[17px]">
                 NextMove

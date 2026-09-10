@@ -49,6 +49,8 @@ Do not copy `src/data/resources.ts` into a chatbot by hand. The same records are
 | [`/resources.json`](https://neurotech-hub.github.io/next-move/resources.json) | Full catalog plus modality and context **gating** rules. Fetch from Execute Code; filter rows. |
 | [`/resources.csv`](https://neurotech-hub.github.io/next-move/resources.csv) | One row per program for a Botpress Table. Array fields use `\|`. |
 | `/kb/{id}.md` | One markdown page per program for a Knowledge Base. Example: [`/kb/gap-fund.md`](https://neurotech-hub.github.io/next-move/kb/gap-fund.md) |
+| [`/resources-for-gem.md`](https://neurotech-hub.github.io/next-move/resources-for-gem.md) | Single catalog tuned for a **Gemini Gem** (routing instructions + labeled PROGRAM blocks). Prefer this when the Gem accepts markdown. |
+| [`/resources-for-gem.pdf`](https://neurotech-hub.github.io/next-move/resources-for-gem.pdf) | Same Gem catalog as a text-extractable PDF for uploads that require PDF. |
 
 Regenerate without a full app build:
 

@@ -5,7 +5,9 @@
   "usage": {
     "json": "Fetch this file from the deployed site. Botpress Execute Code can filter rows; do not RAG-search this blob as one document.",
     "csv": "Import into a Botpress Table (one row per program). Use | -separated array columns for filters.",
-    "knowledgeBase": "Upload public/kb/*.md (one file per program) as a Knowledge Base source for conversational search."
+    "knowledgeBase": "Upload public/kb/*.md (one file per program) as a Knowledge Base source for conversational search.",
+    "gemMarkdown": "Upload resources-for-gem.md into a Gemini Gem. Prefer this when the Gem accepts markdown; one program per block with explicit field labels.",
+    "gemPdf": "Upload resources-for-gem.pdf into a Gemini Gem when PDF is required. Text-based (not scanned); same content as the gem markdown."
   },
   "gating": {
     "modalityLocked": {

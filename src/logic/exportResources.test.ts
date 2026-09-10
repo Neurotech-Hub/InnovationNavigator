@@ -7,6 +7,7 @@ import {
 import {
   buildResourceCatalog,
   catalogToCsv,
+  catalogToGemMarkdown,
   resourceToMarkdown,
 } from "./exportResources";
 
@@ -21,6 +22,7 @@ describe("resource catalog export", () => {
     expect(catalog.gating.contextGated).toEqual(CONTEXT_GATED);
     expect(catalog.gating.modalityLocked).toEqual(MODALITY_LOCKED);
     expect(catalog.resources[0]?.id).toBeDefined();
+    expect(catalog.usage.gemPdf).toContain("resources-for-gem.pdf");
   });
 
   it("flattens array fields in CSV and keeps Gap Fund identifiable", () => {
@@ -37,5 +39,16 @@ describe("resource catalog export", () => {
     expect(markdown).toContain("# Emergency Care Research Core (ECRC)");
     expect(markdown).toContain("Only show when context includes: emergency-care");
     expect(markdown).toContain("## Caveats");
+  });
+
+  it("builds a Gem catalog with routing instructions and labeled program blocks", () => {
+    const markdown = catalogToGemMarkdown(buildResourceCatalog());
+    expect(markdown).toContain("# NextMove resource catalog (for Gemini Gem)");
+    expect(markdown).toContain("## How the Gem should use this catalog");
+    expect(markdown).toContain("NOT FOR (do not recommend when):");
+    expect(markdown).toContain("## PROGRAM:");
+    expect(markdown).toContain("ID: gap-fund");
+    expect(markdown).toContain("MODALITY LOCK:");
+    expect(markdown).toContain("CONTEXT GATE:");
   });
 });

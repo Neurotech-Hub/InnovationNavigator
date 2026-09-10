@@ -9,6 +9,10 @@ import { resources } from "../data/resources";
 export const RESOURCE_CATALOG_PATH = "resources.json";
 export const RESOURCE_CSV_PATH = "resources.csv";
 export const RESOURCE_KB_DIR = "kb";
+/** Single catalog tuned for Gemini Gem knowledge upload (markdown). */
+export const RESOURCE_GEM_MD_PATH = "resources-for-gem.md";
+/** Same catalog as a text-extractable PDF for Gem uploads that prefer PDF. */
+export const RESOURCE_GEM_PDF_PATH = "resources-for-gem.pdf";
 
 export interface ResourceCatalog {
   source: "next-move";
@@ -18,6 +22,8 @@ export interface ResourceCatalog {
     json: string;
     csv: string;
     knowledgeBase: string;
+    gemMarkdown: string;
+    gemPdf: string;
   };
   gating: {
     modalityLocked: Record<string, string[]>;
@@ -37,6 +43,10 @@ export function buildResourceCatalog(version = "0.2.0"): ResourceCatalog {
       csv: "Import into a Botpress Table (one row per program). Use | -separated array columns for filters.",
       knowledgeBase:
         "Upload public/kb/*.md (one file per program) as a Knowledge Base source for conversational search.",
+      gemMarkdown:
+        "Upload resources-for-gem.md into a Gemini Gem. Prefer this when the Gem accepts markdown; one program per block with explicit field labels.",
+      gemPdf:
+        "Upload resources-for-gem.pdf into a Gemini Gem when PDF is required. Text-based (not scanned); same content as the gem markdown.",
     },
     gating: {
       modalityLocked: MODALITY_LOCKED,
@@ -165,4 +175,144 @@ export function resourceToMarkdown(resource: Resource, catalog: ResourceCatalog)
     .filter((line) => line !== null)
     .join("\n")
     .replace(/\n{3,}/g, "\n\n");
+}
+
+function bulletLines(items: string[]): string {
+  if (!items.length) return "- (none listed)";
+  return items.map((item) => `- ${item}`).join("\n");
+}
+
+function formatGateMap(
+  title: string,
+  map: Record<string, string[]>,
+  resourcesById: Map<string, Resource>,
+): string {
+  const entries = Object.entries(map);
+  if (!entries.length) return `${title}\n- (none)\n`;
+  const lines = entries.map(([id, values]) => {
+    const titleLabel = resourcesById.get(id)?.title ?? id;
+    return `- ${titleLabel} (${id}): ${values.join(", ")}`;
+  });
+  return `${title}\n${lines.join("\n")}\n`;
+}
+
+/**
+ * One continuous knowledge document for a Gemini Gem.
+ * Uses repeated field labels, discrete PROGRAM blocks, and explicit routing
+ * rules so the model can cite eligibility and "not for" before recommending.
+ */
+export function catalogToGemMarkdown(catalog: ResourceCatalog): string {
+  const byId = new Map(catalog.resources.map((resource) => [resource.id, resource]));
+  const sorted = [...catalog.resources].sort((a, b) =>
+    a.title.localeCompare(b.title, undefined, { sensitivity: "base" }),
+  );
+
+  const preamble = [
+    "# NextMove resource catalog (for Gemini Gem)",
+    "",
+    `Source: ${catalog.source}`,
+    `Version: ${catalog.version}`,
+    `Program count: ${catalog.resourceCount}`,
+    `Last generated for Gem upload. Prefer this file (or resources-for-gem.pdf) over resources.json for conversational grounding.`,
+    "",
+    "## How the Gem should use this catalog",
+    "",
+    "1. Treat each PROGRAM block as one distinct resource. Do not merge programs.",
+    "2. Before recommending a program, check NOT FOR, ELIGIBILITY, COMPANY REQUIRED, MODALITY LOCK, and CONTEXT GATE.",
+    "3. Patents, licenses, and startups are vehicles — not destinations. Prefer academic returns when the investigator wants research impact, funding, trainees, or distribution without founding.",
+    "4. If COMPANY REQUIRED is no, do not imply the investigator must start a company.",
+    "5. If a CONTEXT GATE is listed, only recommend that program when the user's situation matches (for example emergency care, cancer, digital health).",
+    "6. If a MODALITY LOCK is listed, only recommend when the invention type matches (for example therapeutics-only or devices-only).",
+    "7. When unsure, ask a clarifying question rather than guessing eligibility.",
+    "8. Cite the OFFICIAL URL when pointing the investigator to a next step.",
+    "",
+    "## Global gating rules",
+    "",
+    formatGateMap(
+      "### Modality locks (recommend only for these invention types)",
+      catalog.gating.modalityLocked,
+      byId,
+    ),
+    formatGateMap(
+      "### Context gates (recommend only when context matches)",
+      catalog.gating.contextGated,
+      byId,
+    ),
+    "### Context expand aliases",
+    ...Object.entries(catalog.gating.contextExpand).map(
+      ([key, values]) => `- ${key} → ${values.join(", ")}`,
+    ),
+    "",
+    "## Program index",
+    "",
+    ...sorted.map(
+      (resource, index) =>
+        `${index + 1}. ${resource.title} — id \`${resource.id}\``,
+    ),
+    "",
+    "---",
+    "",
+  ];
+
+  const programs = sorted.flatMap((resource) => {
+    const lock = catalog.gating.modalityLocked[resource.id];
+    const gate = catalog.gating.contextGated[resource.id];
+    return [
+      `## PROGRAM: ${resource.title}`,
+      "",
+      `ID: ${resource.id}`,
+      `ORGANIZATION: ${resource.organization}`,
+      `OFFICIAL URL: ${resource.url}`,
+      resource.contact ? `CONTACT: ${resource.contact}` : null,
+      `LOCATION: ${resource.locations.join(", ")}`,
+      `SCOPE: ${resource.internality}`,
+      `NEEDS ADDRESSED: ${resource.needs.join(", ") || "(none)"}`,
+      `INVENTION TYPES: ${resource.inventionTypes.join(", ") || "(none)"}`,
+      `DOMAINS: ${resource.domains.join(", ") || "(none)"}`,
+      `JOURNEY STAGES: ${resource.states.join(", ") || "(none)"}`,
+      `PRIORITY: ${resource.priority ?? "unspecified"}`,
+      `COMPANY REQUIRED: ${resource.companyRequired ? "yes" : "no"}`,
+      `DISCLOSURE TYPICALLY NEEDED: ${resource.requiresDisclosure ? "yes" : "no"}`,
+      `STATUS: ${resource.status}`,
+      resource.nextDeadline ? `NEXT DEADLINE: ${resource.nextDeadline}` : null,
+      `LAST VERIFIED: ${resource.lastVerified}`,
+      lock ? `MODALITY LOCK: ${lock.join(", ")}` : "MODALITY LOCK: none",
+      gate
+        ? `CONTEXT GATE: only when context includes ${gate.join(", ")}`
+        : "CONTEXT GATE: none",
+      "",
+      "WHAT YOU GET:",
+      resource.whatYouGet,
+      "",
+      "WHY AN INVESTIGATOR MIGHT CARE:",
+      resource.whyYouMightCare,
+      "",
+      "USEFUL WHEN:",
+      bulletLines(resource.usefulWhen),
+      "",
+      "NOT FOR (do not recommend when):",
+      bulletLines(resource.notFor),
+      "",
+      "ELIGIBILITY:",
+      resource.eligibility,
+      "",
+      "CAVEATS:",
+      bulletLines(resource.caveats),
+      "",
+      "ACADEMIC RETURNS:",
+      bulletLines(resource.investigatorReturns),
+      "",
+      "PROBLEMS SOLVED:",
+      bulletLines(resource.problemsSolved),
+      resource.funding ? `\nFUNDING:\n${resource.funding}` : null,
+      resource.sourceUrls.length
+        ? `\nSOURCE URLS:\n${bulletLines(resource.sourceUrls)}`
+        : null,
+      "",
+      "---",
+      "",
+    ].filter((line) => line !== null);
+  });
+
+  return [...preamble, ...programs].join("\n").replace(/\n{3,}/g, "\n\n");
 }
